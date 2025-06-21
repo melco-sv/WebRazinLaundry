@@ -15,21 +15,21 @@ $code = isset($_GET['code']) ? trim($_GET['code']) : '';
 // Debug: tampilkan kode yang diterima
 echo "Kode verifikasi yang diterima: " . htmlspecialchars($code) . "<br>";
 
-if(!empty($code)){
+if (!empty($code)) {
     // Gunakan prepared statement untuk mencegah SQL injection
     $stmt = $koneksi->prepare("SELECT * FROM data WHERE verifikasi_code = ?");
     $stmt->bind_param("s", $code);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    if($result && $result->num_rows > 0) {
+
+    if ($result && $result->num_rows > 0) {
         $data = $result->fetch_assoc();
-            
+
         // Update status verifikasi
         $update_stmt = $koneksi->prepare("UPDATE data SET is_verif = 1 WHERE id = ?");
         $update_stmt->bind_param("i", $data['id']);
-        
-        if($update_stmt->execute()) {
+
+        if ($update_stmt->execute()) {
             echo "<script>alert('Verifikasi Berhasil, Silahkan Login!');window.location='login.php'</script>";
         } else {
             echo "<script>alert('Gagal mengupdate status verifikasi: " . $koneksi->error . "');window.location='login.php'</script>";
@@ -44,4 +44,3 @@ if(!empty($code)){
 }
 
 mysqli_close($koneksi);
-?>

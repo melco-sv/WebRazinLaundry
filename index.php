@@ -1,8 +1,9 @@
 <php
-sessions_start();
-if(!$SESSIOM['user']){
+    sessions_start();
+    if(!$SESSIOM['user']){
     header('location:login.php');
-}
+    }
 
-?>
-<p> Hiii Welcome to websote<p>  
+    ?>
+    <p> Hiii Welcome to websote
+    <p>
