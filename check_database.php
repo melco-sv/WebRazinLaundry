@@ -14,7 +14,7 @@ echo "<h2>Informasi Database</h2>";
 $result = $koneksi->query("SHOW TABLES LIKE 'data'");
 if ($result->num_rows > 0) {
     echo "✓ Tabel 'data' ditemukan<br>";
-    
+
     // Cek struktur tabel
     $result = $koneksi->query("DESCRIBE data");
     echo "<h3>Struktur Tabel 'data':</h3>";
@@ -31,7 +31,7 @@ if ($result->num_rows > 0) {
         echo "</tr>";
     }
     echo "</table>";
-    
+
     // Cek data yang ada
     $result = $koneksi->query("SELECT id, nama, email, verifikasi_code, is_verified FROM data LIMIT 5");
     echo "<h3>Data Terbaru (maksimal 5):</h3>";
@@ -47,11 +47,10 @@ if ($result->num_rows > 0) {
         echo "</tr>";
     }
     echo "</table>";
-    
 } else {
     echo "✗ Tabel 'data' tidak ditemukan<br>";
     echo "<h3>Membuat tabel 'data':</h3>";
-    
+
     $sql = "CREATE TABLE data (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nama VARCHAR(255) NOT NULL,
@@ -61,7 +60,7 @@ if ($result->num_rows > 0) {
         is_verified TINYINT(1) DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
-    
+
     if ($koneksi->query($sql) === TRUE) {
         echo "✓ Tabel 'data' berhasil dibuat<br>";
     } else {
@@ -70,4 +69,3 @@ if ($result->num_rows > 0) {
 }
 
 mysqli_close($koneksi);
-?> 

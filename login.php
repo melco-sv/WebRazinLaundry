@@ -3,23 +3,23 @@ session_start();
 $koneksi = mysqli_connect("localhost", "root", "", "phpmailer");
 
 if (isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $password = $_POST['pw'];
+  $email = $_POST['email'];
+  $password = $_POST['pw'];
 
-    $qry = $koneksi->query("SELECT * FROM data WHERE email='$email' AND password='$password'");
-    $cek = $qry->num_rows;
+  $qry = $koneksi->query("SELECT * FROM data WHERE email='$email' AND password='$password'");
+  $cek = $qry->num_rows;
 
-    if ($cek > 0) {
-        $verif = $qry->fetch_assoc();
-        if ($verif['is_verif'] == 1) {
-            $_SESSION['user'] = $verif;
-            echo "<script>alert('Login Berhasil!');window.location='index.php';</script>";
-        } else {
-            echo "<script>alert('Harap Verifikasi Akun Anda!');window.location='login.php';</script>";
-        }
+  if ($cek > 0) {
+    $verif = $qry->fetch_assoc();
+    if ($verif['is_verif'] == 1) {
+      $_SESSION['user'] = $verif;
+      echo "<script>alert('Login Berhasil!');window.location='index.php';</script>";
     } else {
-        echo "<script>alert('Email atau password salah!');window.location='login.php';</script>";
+      echo "<script>alert('Harap Verifikasi Akun Anda!');window.location='login.php';</script>";
     }
+  } else {
+    echo "<script>alert('Email atau password salah!');window.location='login.php';</script>";
+  }
 }
 ?>
 
@@ -56,6 +56,7 @@ if (isset($_POST['login'])) {
         </form>
     </div>
 
+<<<<<<< HEAD
     <script>
         document.getElementById('pw').addEventListener('focus', function() {
             this.removeAttribute('readonly');
@@ -70,3 +71,10 @@ document.querySelector('input[type="password"]').addEventListener('focus', funct
     this.removeAttribute('readonly');
 });
 </script> -->
+=======
+<script>
+  document.querySelector('input[type="password"]').addEventListener('focus', function() {
+    this.removeAttribute('readonly');
+  });
+</script>
+>>>>>>> 9a76c148320d064457fafa17857a99e35e29b321
