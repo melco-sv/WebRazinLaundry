@@ -13,7 +13,7 @@ if (isset($_POST['login'])) {
     $verif = $qry->fetch_assoc();
     if ($verif['is_verif'] == 1) {
       $_SESSION['user'] = $verif;
-      echo "<script>alert('Login Berhasil!');window.location='index.php';</script>";
+      echo "<script>alert('Login Berhasil!');window.location='invoice.php';</script>";
     } else {
       echo "<script>alert('Harap Verifikasi Akun Anda!');window.location='login.php';</script>";
     }
@@ -56,7 +56,7 @@ if (isset($_POST['login'])) {
         </form>
     </div>
 
-<<<<<<< HEAD
+
     <script>
         document.getElementById('pw').addEventListener('focus', function() {
             this.removeAttribute('readonly');
@@ -71,10 +71,10 @@ document.querySelector('input[type="password"]').addEventListener('focus', funct
     this.removeAttribute('readonly');
 });
 </script> -->
-=======
+
 <script>
   document.querySelector('input[type="password"]').addEventListener('focus', function() {
     this.removeAttribute('readonly');
   });
 </script>
->>>>>>> 9a76c148320d064457fafa17857a99e35e29b321
+

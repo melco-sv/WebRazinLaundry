@@ -4,7 +4,6 @@
     header('location:login.php');
     }
 
-<<<<<<< HEAD
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -132,9 +131,3 @@ Kami menawarkan berbagai layanan, mulai dari laundry pakaian, sepatu, hingga cuc
 </body>
 </html>
 
-    
-=======
-    ?>
-    <p> Hiii Welcome to websote
-    <p>
->>>>>>> 9a76c148320d064457fafa17857a99e35e29b321

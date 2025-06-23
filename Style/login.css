@@ -7,7 +7,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -29,7 +29,7 @@ body {
 
 /* Card Style */
 .auth-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -47,7 +47,7 @@ body {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #4caf50, #2e8b57);
+  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
 }
 
 /* Form Elements */
@@ -73,15 +73,16 @@ body {
 .form-control {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #ddd;
+  border: 2px solid #eee;
   border-radius: 8px;
   font-size: 15px;
   transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .form-control:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+  border-color: #ff9a9e;
+  box-shadow: 0 0 0 3px rgba(255, 154, 158, 0.2);
   outline: none;
 }
 
@@ -90,7 +91,7 @@ body {
   display: inline-block;
   width: 100%;
   padding: 12px;
-  background: linear-gradient(90deg, #4caf50, #2e8b57);
+  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
   color: white;
   border: none;
   border-radius: 8px;
@@ -103,7 +104,7 @@ body {
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
 }
 
 .btn:disabled {
@@ -121,13 +122,14 @@ body {
 }
 
 .auth-link a {
-  color: #4caf50;
+  color: #ff9a9e;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s;
 }
 
 .auth-link a:hover {
+  color: #fad0c4;
   text-decoration: underline;
 }
 
