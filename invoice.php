@@ -82,8 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                    ($karpet * $harga_karpet);
 
     // Simpan transaksi ke dalam database
-    $sql = "INSERT INTO transaksi (id_transaksi, layanan, berat, bed_cover, sprei, selimut, karpet, total_harga, tanggal, nama, no_hp) 
-            VALUES ('$id_transaksi', '$layanan', '$berat', '$bed_cover', '$sprei', '$selimut', '$karpet', '$total_harga', '$tanggal', '$nama', '$no_hp')";
+        // Tambahkan kolom status_proses dan status_pembayaran dengan nilai default 0
+    $sql = "INSERT INTO transaksi (id_transaksi, layanan, berat, bed_cover, sprei, selimut, karpet, total_harga, tanggal, nama, no_hp, status_proses, status_pembayaran) 
+            VALUES ('$id_transaksi', '$layanan', '$berat', '$bed_cover', '$sprei', '$selimut', '$karpet', '$total_harga', '$tanggal', '$nama', '$no_hp', 0, 0)";
 
     if ($conn->query($sql) === TRUE) {
         echo '<script type="text/javascript">alert("Transaksi berhasil disimpan!");</script>';

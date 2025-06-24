@@ -24,7 +24,7 @@ body {
 .header {
   text-align: center;
   padding: 20px 0;
-  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
   color: white;
   margin-bottom: 20px;
   border-radius: 12px 12px 0 0;
@@ -83,7 +83,7 @@ select:focus {
 }
 
 button {
-  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -121,7 +121,7 @@ button:hover {
 }
 
 .total-price {
-  background: #ff9a9e;
+  background: #15b8d8;
   color: white;
   padding: 20px;
   border-radius: 8px;

@@ -3,23 +3,28 @@ session_start();
 $koneksi = mysqli_connect("localhost", "root", "", "phpmailer");
 
 if (isset($_POST['login'])) {
-  $email = $_POST['email'];
-  $password = $_POST['pw'];
+    $email = $_POST['email'];
+    $password = $_POST['pw'];
 
-  $qry = $koneksi->query("SELECT * FROM data WHERE email='$email' AND password='$password'");
-  $cek = $qry->num_rows;
-
-  if ($cek > 0) {
+    // Ambil data pengguna berdasarkan email
+    $qry = $koneksi->query("SELECT * FROM data WHERE email='$email'");
     $verif = $qry->fetch_assoc();
-    if ($verif['is_verif'] == 1) {
-      $_SESSION['user'] = $verif;
-      echo "<script>alert('Login Berhasil!');window.location='invoice.php';</script>";
+
+    if ($verif) {
+        // Verifikasi password
+        if (password_verify($password, $verif['password'])) {
+            if ($verif['is_verif'] == 1) {
+                $_SESSION['user'] = $verif;
+                echo "<script>alert('Login Berhasil!');window.location='invoice.php';</script>";
+            } else {
+                echo "<script>alert('Harap Verifikasi Akun Anda!');window.location='login.php';</script>";
+            }
+        } else {
+            echo "<script>alert('Email atau password salah!');window.location='login.php';</script>";
+        }
     } else {
-      echo "<script>alert('Harap Verifikasi Akun Anda!');window.location='login.php';</script>";
+        echo "<script>alert('Email atau password salah!');window.location='login.php';</script>";
     }
-  } else {
-    echo "<script>alert('Email atau password salah!');window.location='login.php';</script>";
-  }
 }
 ?>
 
@@ -29,7 +34,7 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Laundry App</title>
-     <link rel="stylesheet" type="text/css" href="style/login.css">
+    <link rel="stylesheet" type="text/css" href="style/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -56,7 +61,6 @@ if (isset($_POST['login'])) {
         </form>
     </div>
 
-
     <script>
         document.getElementById('pw').addEventListener('focus', function() {
             this.removeAttribute('readonly');
@@ -64,17 +68,3 @@ if (isset($_POST['login'])) {
     </script>
 </body>
 </html>
-
-
-<!-- <script>
-document.querySelector('input[type="password"]').addEventListener('focus', function() {
-    this.removeAttribute('readonly');
-});
-</script> -->
-
-<script>
-  document.querySelector('input[type="password"]').addEventListener('focus', function() {
-    this.removeAttribute('readonly');
-  });
-</script>
-
