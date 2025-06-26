@@ -100,149 +100,153 @@ if (!$result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Transaksi - Razin Laundry</title>
     <link rel="stylesheet" href="style/transaksi-style.css">
-
+    <link rel="stylesheet" href="style/sidebar.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Daftar Transaksi Razin Laundry</h1>
-    </div>
+    <div class="app-container">
+        <?php include 'sidebar.php'; // Sertakan sidebar di sini ?>
+        
+        <div class="main-content-column"> <!-- Tambahkan wrapper untuk konten utama -->
+            <div class="header">
+                <h1>Daftar Transaksi Razin Laundry</h1>
+            </div>
 
-    <div class="container">
-        <!-- Dashboard Stats -->
-        <div class="dashboard-stats">
-            <div class="stat-card">
-                <h3>On Progress</h3>
-                <div class="stat-value stat-progress"><?php echo $stats['on_progress']; ?></div>
-                <div class="stat-percent"><?php echo round(($stats['on_progress']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Sedang Dicuci</h3>
-                <div class="stat-value stat-dicuci"><?php echo $stats['dicuci']; ?></div>
-                <div class="stat-percent"><?php echo round(($stats['dicuci']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Selesai</h3>
-                <div class="stat-value stat-selesai"><?php echo $stats['selesai']; ?></div>
-                <div class="stat-percent"><?php echo round(($stats['selesai']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Belum Dibayar</h3>
-                <div class="stat-value stat-belum-bayar"><?php echo $stats['belum_bayar']; ?></div>
-                <div class="stat-percent"><?php echo round(($stats['belum_bayar']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Sudah Dibayar</h3>
-                <div class="stat-value stat-sudah-bayar"><?php echo $stats['sudah_bayar']; ?></div>
-                <div class="stat-percent"><?php echo round(($stats['sudah_bayar']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Total Transaksi</h3>
-                <div class="stat-value stat-total"><?php echo $stats['total_transaksi']; ?></div>
-                <div class="stat-percent">100%</div>
-            </div>
-        </div>
+            <div class="container">
+                <!-- Dashboard Stats -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>On Progress</h3>
+                        <div class="stat-value stat-progress"><?php echo $stats['on_progress']; ?></div>
+                        <div class="stat-percent"><?php echo round(($stats['on_progress']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Sedang Dicuci</h3>
+                        <div class="stat-value stat-dicuci"><?php echo $stats['dicuci']; ?></div>
+                        <div class="stat-percent"><?php echo round(($stats['dicuci']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Selesai</h3>
+                        <div class="stat-value stat-selesai"><?php echo $stats['selesai']; ?></div>
+                        <div class="stat-percent"><?php echo round(($stats['selesai']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Belum Dibayar</h3>
+                        <div class="stat-value stat-belum-bayar"><?php echo $stats['belum_bayar']; ?></div>
+                        <div class="stat-percent"><?php echo round(($stats['belum_bayar']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Sudah Dibayar</h3>
+                        <div class="stat-value stat-sudah-bayar"><?php echo $stats['sudah_bayar']; ?></div>
+                        <div class="stat-percent"><?php echo round(($stats['sudah_bayar']/$stats['total_transaksi'])*100, 1); ?>% dari total</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Total Transaksi</h3>
+                        <div class="stat-value stat-total"><?php echo $stats['total_transaksi']; ?></div>
+                        <div class="stat-percent">100%</div>
+                    </div>
+                </div>
 
-        <!-- Tabel Transaksi -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Transaksi</th>
-                        <th>Nama Pelanggan</th>
-                        <th>No. HP</th>
-                        <th>Status Proses</th>
-                        <th>Aksi Proses</th>
-                        <th>Status Pembayaran</th>
-                        <th>Aksi Pembayaran</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <!-- Tabel Transaksi -->
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['id_transaksi']); ?></td>
-                                <td><?php echo htmlspecialchars($row['nama']); ?></td>
-                                <td><?php echo htmlspecialchars($row['no_hp']); ?></td>
-                                <td><?php echo getStatusProses($row['status_proses']); ?></td>
-                                <td>
-                                    <form action="transaksi.php" method="POST" class="form-inline">
-                                        <input type="hidden" name="id_transaksi" value="<?php echo htmlspecialchars($row['id_transaksi']); ?>">
-                                        <select name="status_proses">
-                                            <option value="0" <?php echo ($row['status_proses'] == 0) ? 'selected' : ''; ?>>On Progress</option>
-                                            <option value="1" <?php echo ($row['status_proses'] == 1) ? 'selected' : ''; ?>>Dicuci</option>
-                                            <option value="2" <?php echo ($row['status_proses'] == 2) ? 'selected' : ''; ?>>Selesai</option>
-                                        </select>
-                                        <button type="submit" name="update_proses">Update</button>
-                                    </form>
-                                </td>
-                                <td><?php echo getStatusPembayaran($row['status_pembayaran']); ?></td>
-                                <td>
-                                    <form action="transaksi.php" method="POST" class="form-inline">
-                                        <input type="hidden" name="id_transaksi" value="<?php echo htmlspecialchars($row['id_transaksi']); ?>">
-                                        <select name="status_pembayaran">
-                                            <option value="0" <?php echo ($row['status_pembayaran'] == 0) ? 'selected' : ''; ?>>Belum Dibayar</option>
-                                            <option value="1" <?php echo ($row['status_pembayaran'] == 1) ? 'selected' : ''; ?>>Sudah Dibayar</option>
-                                        </select>
-                                        <button type="submit" name="update_pembayaran">Update</button>
-                                    </form>
-                                </td>
+                                <th>ID Transaksi</th>
+                                <th>Nama Pelanggan</th>
+                                <th>No. HP</th>
+                                <th>Status Proses</th>
+                                <th>Aksi Proses</th>
+                                <th>Status Pembayaran</th>
+                                <th>Aksi Pembayaran</th>
                             </tr>
-                        <?php endwhile; ?>
+                        </thead>
+                        <tbody>
+                            <?php if (mysqli_num_rows($result) > 0): ?>
+                                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($row['id_transaksi']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['nama']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['no_hp']); ?></td>
+                                        <td><?php echo getStatusProses($row['status_proses']); ?></td>
+                                        <td>
+                                            <form action="transaksi.php" method="POST" class="form-inline">
+                                                <input type="hidden" name="id_transaksi" value="<?php echo htmlspecialchars($row['id_transaksi']); ?>">
+                                                <select name="status_proses">
+                                                    <option value="0" <?php echo ($row['status_proses'] == 0) ? 'selected' : ''; ?>>On Progress</option>
+                                                    <option value="1" <?php echo ($row['status_proses'] == 1) ? 'selected' : ''; ?>>Dicuci</option>
+                                                    <option value="2" <?php echo ($row['status_proses'] == 2) ? 'selected' : ''; ?>>Selesai</option>
+                                                </select>
+                                                <button type="submit" name="update_proses">Update</button>
+                                            </form>
+                                        </td>
+                                        <td><?php echo getStatusPembayaran($row['status_pembayaran']); ?></td>
+                                        <td>
+                                            <form action="transaksi.php" method="POST" class="form-inline">
+                                                <input type="hidden" name="id_transaksi" value="<?php echo htmlspecialchars($row['id_transaksi']); ?>">
+                                                <select name="status_pembayaran">
+                                                    <option value="0" <?php echo ($row['status_pembayaran'] == 0) ? 'selected' : ''; ?>>Belum Dibayar</option>
+                                                    <option value="1" <?php echo ($row['status_pembayaran'] == 1) ? 'selected' : ''; ?>>Sudah Dibayar</option>
+                                                </select>
+                                                <button type="submit" name="update_pembayaran">Update</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7">Tidak ada data transaksi.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                <div class="pagination">
+                    <?php if ($current_page > 1): ?>
+                        <a href="transaksi.php?page=<?php echo $current_page - 1; ?>">&laquo; Previous</a>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="7">Tidak ada data transaksi.</td>
-                        </tr>
+                        <span class="disabled">&laquo; Previous</span>
                     <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
 
-       
-        <!-- Pagination -->
-        <?php if ($total_pages > 1): ?>
-        <div class="pagination">
-            <?php if ($current_page > 1): ?>
-                <a href="transaksi.php?page=<?php echo $current_page - 1; ?>">&laquo; Previous</a>
-            <?php else: ?>
-                <span class="disabled">&laquo; Previous</span>
-            <?php endif; ?>
+                    <?php 
+                    $start_page = max(1, $current_page - 2);
+                    $end_page = min($total_pages, $current_page + 2);
+                    
+                    if ($start_page > 1) {
+                        echo '<a href="transaksi.php?page=1">1</a>';
+                        if ($start_page > 2) echo '<span>...</span>';
+                    }
+                    
+                    for ($i = $start_page; $i <= $end_page; $i++): ?>
+                        <?php if ($i == $current_page): ?>
+                            <span class="active"><?php echo $i; ?></span>
+                        <?php else: ?>
+                            <a href="transaksi.php?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+                    
+                    <?php if ($end_page < $total_pages) {
+                        if ($end_page < $total_pages - 1) echo '<span>...</span>';
+                        echo '<a href="transaksi.php?page='.$total_pages.'">'.$total_pages.'</a>';
+                    }
+                    ?>
 
-            <?php 
-            $start_page = max(1, $current_page - 2);
-            $end_page = min($total_pages, $current_page + 2);
-            
-            if ($start_page > 1) {
-                echo '<a href="transaksi.php?page=1">1</a>';
-                if ($start_page > 2) echo '<span>...</span>';
-            }
-            
-            for ($i = $start_page; $i <= $end_page; $i++): ?>
-                <?php if ($i == $current_page): ?>
-                    <span class="active"><?php echo $i; ?></span>
-                <?php else: ?>
-                    <a href="transaksi.php?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    <?php if ($current_page < $total_pages): ?>
+                        <a href="transaksi.php?page=<?php echo $current_page + 1; ?>">Next &raquo;</a>
+                    <?php else: ?>
+                        <span class="disabled">Next &raquo;</span>
+                    <?php endif; ?>
+                </div>
                 <?php endif; ?>
-            <?php endfor; ?>
-            
-            <?php if ($end_page < $total_pages) {
-                if ($end_page < $total_pages - 1) echo '<span>...</span>';
-                echo '<a href="transaksi.php?page='.$total_pages.'">'.$total_pages.'</a>';
-            }
-            ?>
-
-            <?php if ($current_page < $total_pages): ?>
-                <a href="transaksi.php?page=<?php echo $current_page + 1; ?>">Next &raquo;</a>
-            <?php else: ?>
-                <span class="disabled">Next &raquo;</span>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
-    </div>
+            </div>
+        </div> <!-- Tutup main-content-column -->
+    </div> <!-- Tutup app-container -->
 </body>
 </html>
-                    

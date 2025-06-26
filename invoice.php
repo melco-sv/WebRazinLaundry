@@ -82,7 +82,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                    ($karpet * $harga_karpet);
 
     // Simpan transaksi ke dalam database
-        // Tambahkan kolom status_proses dan status_pembayaran dengan nilai default 0
     $sql = "INSERT INTO transaksi (id_transaksi, layanan, berat, bed_cover, sprei, selimut, karpet, total_harga, tanggal, nama, no_hp, status_proses, status_pembayaran) 
             VALUES ('$id_transaksi', '$layanan', '$berat', '$bed_cover', '$sprei', '$selimut', '$karpet', '$total_harga', '$tanggal', '$nama', '$no_hp', 0, 0)";
 
@@ -104,106 +103,113 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Laundry</title>
     <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/sidebar.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Form Transaksi Laundry</h1>
-    </div>
-
-    <div class="container">
-        <!-- Form Input Section (Left) -->
-        <div class="input-section">
-            <form action="invoice.php" method="POST">
-                <div class="form-group">
-                    <label for="tanggal">Tanggal:</label>
-                    <input type="date" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="nama">Nama:</label>
-                    <input type="text" name="nama" id="nama" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="no_hp">No HP:</label>
-                    <input type="text" name="no_hp" id="no_hp" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="layanan">Layanan:</label>
-                    <select name="layanan" id="layanan" required onchange="updateHarga()">
-                        <option value="Cuci Biasa">Cuci Biasa</option>
-                        <option value="Cuci Express">Cuci Express</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="berat">Berat (kg):</label>
-                    <input type="number" name="berat" id="berat" onchange="updateHarga()" min="0" step="0.1">
-                </div>
-                
-                <div class="form-group">
-                    <label for="bed_cover">Bed Cover (Qty):</label>
-                    <input type="number" name="bed_cover" id="bed_cover" min="0" value="0" onchange="updateHarga()">
-                </div>
-                
-                <div class="form-group">
-                    <label for="sprei">Sprei (Qty):</label>
-                    <input type="number" name="sprei" id="sprei" min="0" value="0" onchange="updateHarga()">
-                </div>
-                
-                <div class="form-group">
-                    <label for="selimut">Selimut (Qty):</label>
-                    <input type="number" name="selimut" id="selimut" min="0" value="0" onchange="updateHarga()">
-                </div>
-                
-                <div class="form-group">
-                    <label for="karpet">Karpet (Qty):</label>
-                    <input type="number" name="karpet" id="karpet" min="0" value="0" onchange="updateHarga()">
-                </div>
-                
-                <!-- Menyimpan Total Harga ke dalam form -->
-                <input type="hidden" name="total_harga" id="total_harga_input">
-                
-                <button type="submit">Simpan Transaksi</button>
-            </form>
-        </div>
+    <div class="app-container">
+        <?php include 'sidebar.php'; // Sertakan sidebar di sini ?>
         
-        <!-- Price Calculation Section (Right) -->
-        <div class="price-section">
-            <h2>Rincian Harga</h2>
-            
-            <div class="price-item">
-                <div class="price-item-title">Harga Layanan</div>
-                <div class="price-item-value" id="harga_layanan">Rp 0</div>
+        <div class="main-content-column">
+            <div class="header">
+                <h1>Form Transaksi Laundry</h1>
             </div>
-            
-            <div class="price-item">
-                <div class="price-item-title">Harga Bed Cover</div>
-                <div class="price-item-value" id="harga_bed_cover">Rp 0</div>
+
+            <div class="container">
+                <!-- Form Input Section (Left) -->
+                <div class="input-section">
+                    <form action="invoice.php" method="POST">
+                        <div class="form-group">
+                            <label for="tanggal">Tanggal:</label>
+                            <input type="date" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nama">Nama:</label>
+                            <input type="text" name="nama" id="nama" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="no_hp">No HP:</label>
+                            <input type="text" name="no_hp" id="no_hp" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="layanan">Layanan:</label>
+                            <select name="layanan" id="layanan" required onchange="updateHarga()">
+                                <option value="Cuci Biasa">Cuci Biasa</option>
+                                <option value="Cuci Express">Cuci Express</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="berat">Berat (kg):</label>
+                            <input type="number" name="berat" id="berat" onchange="updateHarga()" min="0" step="0.1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bed_cover">Bed Cover (Qty):</label>
+                            <input type="number" name="bed_cover" id="bed_cover" min="0" value="0" onchange="updateHarga()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sprei">Sprei (Qty):</label>
+                            <input type="number" name="sprei" id="sprei" min="0" value="0" onchange="updateHarga()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="selimut">Selimut (Qty):</label>
+                            <input type="number" name="selimut" id="selimut" min="0" value="0" onchange="updateHarga()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="karpet">Karpet (Qty):</label>
+                            <input type="number" name="karpet" id="karpet" min="0" value="0" onchange="updateHarga()">
+                        </div>
+                        
+                        <!-- Menyimpan Total Harga ke dalam form -->
+                        <input type="hidden" name="total_harga" id="total_harga_input">
+                        
+                        <button type="submit">Simpan Transaksi</button>
+                    </form>
+                </div>
+                
+                <!-- Price Calculation Section (Right) -->
+                <div class="price-section">
+                    <h2>Rincian Harga</h2>
+                    
+                    <div class="price-item">
+                        <div class="price-item-title">Harga Layanan</div>
+                        <div class="price-item-value" id="harga_layanan">Rp 0</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="price-item-title">Harga Bed Cover</div>
+                        <div class="price-item-value" id="harga_bed_cover">Rp 0</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="price-item-title">Harga Sprei</div>
+                        <div class="price-item-value" id="harga_sprei">Rp 0</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="price-item-title">Harga Selimut</div>
+                        <div class="price-item-value" id="harga_selimut">Rp 0</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="price-item-title">Harga Karpet</div>
+                        <div class="price-item-value" id="harga_karpet">Rp 0</div>
+                    </div>
+                    
+                    <div class="total-price">
+                        <div class="total-price-title">Total Harga</div>
+                        <div class="total-price-value" id="total_harga">Rp 0</div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="price-item">
-                <div class="price-item-title">Harga Sprei</div>
-                <div class="price-item-value" id="harga_sprei">Rp 0</div>
-            </div>
-            
-            <div class="price-item">
-                <div class="price-item-title">Harga Selimut</div>
-                <div class="price-item-value" id="harga_selimut">Rp 0</div>
-            </div>
-            
-            <div class="price-item">
-                <div class="price-item-title">Harga Karpet</div>
-                <div class="price-item-value" id="harga_karpet">Rp 0</div>
-            </div>
-            
-            <div class="total-price">
-                <div class="total-price-title">Total Harga</div>
-                <div class="total-price-value" id="total_harga">Rp 0</div>
-            </div>
-        </div>
-    </div>
+        </div> <!-- Tutup main-content-column -->
+    </div> <!-- Tutup app-container -->
 
     <script>
         function updateHarga() {
