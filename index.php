@@ -1,133 +1,138 @@
-<php
-    sessions_start();
-    if(!$SESSIOM['user']){
-    header('location:login.php');
-    }
-
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Landing Page">
-    <meta name="author" content="Nama Anda">
-    <title>Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Order Tracking</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .status-indicator {
+            display: inline-block;
+            width: 20px; /* Lebar oval */
+            height: 10px; /* Tinggi oval */
+            border-radius: 10px; /* Membuat oval */
+            margin-right: 5px; /* Jarak antara oval dan teks */
+        }
+        .status-on-progress {
+            background-color: red;
+        }
+        .status-dicuci {
+            background-color: yellow;
+        }
+        .status-selesai {
+            background-color: green;
+        }
+        .status-belum-dibayar {
+            background-color: red;
+        }
+        .status-sudah-dibayar {
+            background-color: green;
+        }
+    </style>
 </head>
 <body>
-
-    <header>
-        <div class="container">
-            <h1 class="logo">Razin Laundry</h1>
-            <nav>
-                <ul>
-                    <li><a href="#tracking">Tracking Pesanan Anda</a></li>
-                    <li><a href="#about">Tentang Kami</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Selamat Datang di Razin Laundry</h2>
-            <p>Mencuci Cepat dan Bersih uhuy</p>
-            <a href="#about" class="btn">Tentang Kami</a>
-        </div>
-    </section>
-
-    <section id="tracking" class="tracking">
-        <div class="container">
-            <h2>Tracking Pesanan Anda</h2>
-            <p>Masukkan nomor invoice atau kode pesanan Anda untuk melacak status pesanan.</p>
-
-            <div class="tracking-form">
-                <input type="text" id="invoice-number" placeholder="Masukkan Nomor Invoice" required>
-                <button id="track-button" class="btn">Lacak Pesanan</button>
+    <div class="container mt-5">
+        <h2>Order Tracking</h2>
+        <form id="trackingForm" method="POST" action="">
+            <div class="form-group">
+                <label for="id_tracking">Masukkan ID Tracking:</label>
+                <input type="text" id="id_tracking" name="id_tracking" class="form-control" required>
             </div>
+            <input type="submit" value="Cari" class="btn btn-primary">
+        </form>
 
-            <!-- Menampilkan hasil tracking -->
-            <div id="tracking-status" style="display:none;">
-                <h3>Status Pesanan: <span id="status"></span></h3>
-                <div id="status-details">
-                    <p><strong>Waktu Proses:</strong> <span id="process-time"></span></p>
-                    <p><strong>Alamat Pengiriman:</strong> <span id="delivery-address"></span></p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="features" class="features">
-        <div class="container">
-            <h2>Fitur Kami</h2>
-            <div class="feature-item">
-                <h3>Fitur 1</h3>
-                <p>Deskripsi singkat tentang fitur pertama yang ditawarkan.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Fitur 2</h3>
-                <p>Deskripsi singkat tentang fitur kedua yang ditawarkan.</p>
-            </div>
-            <div class="feature-item">
-                <h3>Fitur 3</h3>
-                <p>Deskripsi singkat tentang fitur ketiga yang ditawarkan.</p>
-            </div>
-        </div>
-    </section>
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $id_tracking = $_POST['id_tracking'];
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2>Tentang Kami</h2>
-            <p>Selamat datang di Razin Laundry! Kami hadir untuk memberikan layanan laundry terbaik dengan kualitas tinggi, cepat, dan terpercaya. Dengan teknologi canggih dan bahan ramah lingkungan, kami menjaga kualitas pakaian Anda.
-Kami menawarkan berbagai layanan, mulai dari laundry pakaian, sepatu, hingga cuci karpet, serta layanan antar jemput untuk kenyamanan Anda. Di [Nama Laundry], pelanggan selalu menjadi prioritas, dan kami berkomitmen memberikan pengalaman terbaik setiap saat.
-</p>
-        </div>
-    </section>
+            // Koneksi ke database
+            $host = "localhost";
+            $user = "root";
+            $pass = "";
+            $dbname = "phpmailer"; // Gantilah nama database sesuai kebutuhan Anda
 
-    <footer>
-    <div class="footer-container">
-        <!-- Bagian Kiri: Hak Cipta -->
-        <div class="footer-left">
-            <p>&copy; Copyright 2025 All rights Reserved with Razin Laundry.</p>
-        </div>
+            $conn = mysqli_connect($host, $user, $pass, $dbname);
 
-        <!-- Bagian Kanan: Kontak -->
-        <div class="footer-right">
-            <h3>Kontak Kami</h3>
-            <ul class="social-links">
-                <li><a href="https://wa.me/62878708675313" target="_blank">📞 Hub. WhatsApp</a></li>
-                <li><a href="https://twitter.com" target="_blank">🐦 Twitter</a></li>
-                <li><a href="https://facebook.com" target="_blank">📘 Facebook</a></li>
-                <li><a href="https://instagram.com" target="_blank">📸 Instagram</a></li>
-            </ul>
-            <p><strong>Alamat:</strong> Gg. Swadaya No.69 Bakti Jaya Kec. Setu Kota Tangerang Selatan, Banten 15315</p>
-        </div>
-    </div>
-</footer>
+            // Cek koneksi
+            if (!$conn) {
+                die("Connection failed: " . mysqli_connect_error());
+            }
 
-<script>
-        document.getElementById('track-button').addEventListener('click', function () {
-            let invoiceNumber = document.getElementById('invoice-number').value;
-            trackOrder(invoiceNumber);
-        });
+            // Query untuk mengambil data berdasarkan ID tracking
+            $sql = "SELECT id_transaksi, nama, no_hp, status_proses, status_pembayaran, total_harga 
+                    FROM transaksi WHERE id_transaksi = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $id_tracking); // Ganti "s" dengan tipe data yang sesuai
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        function trackOrder(invoiceNumber) {
-            // Simulasi data untuk status pelacakan
-            let orderStatus = "Sedang Diproses";
-            let processTime = "2 jam lagi";
-            let deliveryAddress = "Gg. Swadaya No.69 Bakti Jaya Kec. Setu Kota Tangerang Selatan, Banten 15315";
+            // Tampilkan data jika ditemukan
+            if ($result->num_rows > 0) {
+                echo "<table class='table mt-4'>
+                        <thead>
+                            <tr>
+                                <th>ID Transaksi</th>
+                                <th>Nama Pelanggan</th>
+                                <th>No HP</th>
+                                <th>Status Progres</th>
+                                <th>Status Pembayaran</th>
+                                <th>Total Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+                $row = $result->fetch_assoc();
 
-            // Menampilkan status pelacakan
-            document.getElementById('status').textContent = orderStatus;
-            document.getElementById('process-time').textContent = processTime;
-            document.getElementById('delivery-address').textContent = deliveryAddress;
+                // Mengubah status_proses menjadi deskripsi dan kelas CSS
+                switch ($row['status_proses']) {
+                    case 0:
+                        $status_proses = "On Progress";
+                        $status_proses_class = "status-on-progress";
+                        break;
+                    case 1:
+                        $status_proses = "Dicuci";
+                        $status_proses_class = "status-dicuci";
+                        break;
+                    case 2:
+                        $status_proses = "Selesai";
+                        $status_proses_class = "status-selesai";
+                        break;
+                    default:
+                        $status_proses = "Tidak Diketahui";
+                        $status_proses_class = "";
+                }
 
-            // Menampilkan status tracking
-            document.getElementById('tracking-status').style.display = 'block';
+                // Mengubah status_pembayaran menjadi deskripsi dan kelas CSS
+                switch ($row['status_pembayaran']) {
+                    case 0:
+                        $status_pembayaran = "Belum Dibayar";
+                        $status_pembayaran_class = "status-belum-dibayar";
+                        break;
+                    case 1:
+                        $status_pembayaran = "Sudah Dibayar";
+                        $status_pembayaran_class = "status-sudah-dibayar";
+                        break;
+                    default:
+                        $status_pembayaran = "Tidak Diketahui";
+                        $status_pembayaran_class = "";
+                }
+
+                echo "<tr>
+                        <td>{$row['id_transaksi']}</td>
+                        <td>{$row['nama']}</td>
+                        <td>{$row['no_hp']}</td>
+                        <td><span class='status-indicator {$status_proses_class}'></span>{$status_proses}</td>
+                        <td><span class='status-indicator {$status_pembayaran_class}'></span>{$status_pembayaran}</td>
+                        <td>{$row['total_harga']}</td>
+                      </tr>";
+                echo "</tbody></table>";
+            } else {
+                echo "<div class='alert alert-warning mt-4'>Data tidak ditemukan untuk ID Tracking: $id_tracking</div>";
+            }
+
+            $stmt->close();
+            $conn->close();
         }
-    </script>
-
+        ?>
+    </div>
 </body>
 </html>
-
