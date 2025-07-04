@@ -5,94 +5,51 @@ error_reporting(E_ALL);
 
 // Jika form disubmit (metode POST)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Memeriksa apakah data sudah ada dalam array POST
-    $layanan = isset($_POST['layanan']) ? $_POST['layanan'] : '';
-    $berat = isset($_POST['berat']) ? (float) $_POST['berat'] : 0;
-    $bed_cover = isset($_POST['bed_cover']) ? (int) $_POST['bed_cover'] : 0;
-    $sprei = isset($_POST['sprei']) ? (int) $_POST['sprei'] : 0;
-    $selimut = isset($_POST['selimut']) ? (int) $_POST['selimut'] : 0;
-    $karpet = isset($_POST['karpet']) ? (int) $_POST['karpet'] : 0;
-    $total_harga = isset($_POST['total_harga']) ? (float) $_POST['total_harga'] : 0;
+    $layanan = $_POST['layanan'] ?? '';
+    $berat = (float)($_POST['berat'] ?? 0);
+    $bed_cover = (int)($_POST['bed_cover'] ?? 0);
+    $sprei = (int)($_POST['sprei'] ?? 0);
+    $selimut = (int)($_POST['selimut'] ?? 0);
+    $karpet = (int)($_POST['karpet'] ?? 0);
+    $tanggal = $_POST['tanggal'] ?? date('Y-m-d');
+    $nama = $_POST['nama'] ?? '';
+    $no_hp = $_POST['no_hp'] ?? '';
 
-    // Data tambahan: Nama, No HP, Tanggal
-    $tanggal = isset($_POST['tanggal']) ? $_POST['tanggal'] : '';
-    $nama = isset($_POST['nama']) ? $_POST['nama'] : '';
-    $no_hp = isset($_POST['no_hp']) ? $_POST['no_hp'] : '';
-
-    // Validasi jika layanan dan nama tidak kosong
-    if ($layanan == '' || $nama == '') {
-        echo "Layanan dan Nama harus diisi!";
-        exit;
-    }
-
-    // Membuat ID transaksi acak (7 digit)
-    $id_transaksi = mt_rand(1000000, 9999999); // Menghasilkan angka acak 7 digit
-
-    // Koneksi ke database
-    $host = 'localhost';  // Ganti dengan host Anda
-    $user = 'root';       // Ganti dengan username database Anda
-    $pass = '';           // Ganti dengan password database Anda
-    $dbname = 'phpmailer';  // Ganti dengan nama database Anda
-
-    // Buat koneksi ke database
-    $conn = new mysqli($host, $user, $pass, $dbname);
-
-    // Periksa koneksi
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Ambil harga layanan dari database
-    $sql_layanan = "SELECT harga_per_kg FROM harga WHERE layanan = '$layanan'";
-    $result_layanan = $conn->query($sql_layanan);
-    if ($result_layanan->num_rows > 0) {
-        $row_layanan = $result_layanan->fetch_assoc();
-        $harga_per_kg = $row_layanan['harga_per_kg'];
+    // Validasi
+    if (empty($layanan) || empty($nama)) {
+        $error = "Layanan dan Nama harus diisi!";
     } else {
-        echo "Layanan tidak ditemukan!";
-        exit;
+        $id_transaksi = mt_rand(1000000, 9999999);
+        $conn = new mysqli('localhost', 'root', '', 'phpmailer');
+        
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Ambil harga layanan
+        $stmt = $conn->prepare("SELECT harga_per_kg FROM harga WHERE layanan = ?");
+        $stmt->bind_param("s", $layanan);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            $error = "Layanan tidak ditemukan!";
+        } else {
+            $harga_per_kg = $result->fetch_assoc()['harga_per_kg'];
+            $total_harga = ($berat * $harga_per_kg) + ($bed_cover * 30000) + ($sprei * 8000) + ($selimut * 8000) + ($karpet * 45000);
+
+            $stmt = $conn->prepare("INSERT INTO transaksi 
+                (id_transaksi, layanan, berat, bed_cover, sprei, selimut, karpet, total_harga, tanggal, nama, no_hp, status_proses, status_pembayaran) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");
+            
+            if ($stmt->bind_param("ssdiiidssss", $id_transaksi, $layanan, $berat, $bed_cover, $sprei, $selimut, $karpet, $total_harga, $tanggal, $nama, $no_hp) && $stmt->execute()) {
+                $success = "Transaksi berhasil! ID: $id_transaksi";
+            } else {
+                $error = "Gagal menyimpan transaksi!";
+            }
+        }
+        $conn->close();
     }
-
-    // Ambil harga item tambahan
-    $sql_bed_cover = "SELECT harga FROM harga_item WHERE item = 'Bed Cover'";
-    $result_bed_cover = $conn->query($sql_bed_cover);
-    $row_bed_cover = $result_bed_cover->fetch_assoc();
-    $harga_bed_cover = $row_bed_cover['harga'];
-
-    $sql_sprei = "SELECT harga FROM harga_item WHERE item = 'Sprei'";
-    $result_sprei = $conn->query($sql_sprei);
-    $row_sprei = $result_sprei->fetch_assoc();
-    $harga_sprei = $row_sprei['harga'];
-
-    $sql_selimut = "SELECT harga FROM harga_item WHERE item = 'Selimut'";
-    $result_selimut = $conn->query($sql_selimut);
-    $row_selimut = $result_selimut->fetch_assoc();
-    $harga_selimut = $row_selimut['harga'];
-
-    $sql_karpet = "SELECT harga FROM harga_item WHERE item = 'Karpet'";
-    $result_karpet = $conn->query($sql_karpet);
-    $row_karpet = $result_karpet->fetch_assoc();
-    $harga_karpet = $row_karpet['harga'];
-
-    // Hitung total harga
-    $total_harga = ($berat * $harga_per_kg) + 
-                   ($bed_cover * $harga_bed_cover) + 
-                   ($sprei * $harga_sprei) + 
-                   ($selimut * $harga_selimut) + 
-                   ($karpet * $harga_karpet);
-
-    // Simpan transaksi ke dalam database
-    $sql = "INSERT INTO transaksi (id_transaksi, layanan, berat, bed_cover, sprei, selimut, karpet, total_harga, tanggal, nama, no_hp, status_proses, status_pembayaran) 
-            VALUES ('$id_transaksi', '$layanan', '$berat', '$bed_cover', '$sprei', '$selimut', '$karpet', '$total_harga', '$tanggal', '$nama', '$no_hp', 0, 0)";
-
-    if ($conn->query($sql) === TRUE) {
-        echo '<script type="text/javascript">alert("Transaksi berhasil disimpan!");</script>';
-    } else {
-        echo "Error: " . $conn->error;
-    }
-
-    // Tutup koneksi
-    $conn->close();
 }
 ?>
 
@@ -101,40 +58,203 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Laundry</title>
+    <title>Form Transaksi Laundry</title>
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/sidebar.css">
+    <style>
+        :root {
+            --sidebar-width: 10px;
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --success-color: #38ef7d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content-column {
+            flex: 1;
+            padding: 10px 15px;
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s;
+        }
+        
+        .header {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            color: white;
+            border-radius: 6px;
+        }
+        
+        .container {
+            display: flex;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .input-section, .price-section {
+            padding: 18px;
+            flex: 1;
+        }
+        
+        .input-section {
+            border-right: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .item-quantity {
+            display: none;
+            margin: 5px 0 5px 26px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        
+        .price-section {
+            background: #fafbff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .price-item {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            display: none; /* Hide all price items by default */
+        }
+        
+        .price-item.show {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .total-price {
+            background: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content-column {
+                margin-left: 0;
+                padding: 8px;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <?php include 'sidebar.php'; // Sertakan sidebar di sini ?>
+        <?php include 'sidebar.php'; ?>
         
         <div class="main-content-column">
             <div class="header">
-                <h1>Form Transaksi Laundry</h1>
+                <h1 style="font-size:18px;">Form Transaksi Laundry</h1>
             </div>
 
+            <?php if (isset($error)): ?>
+                <div style="background:#f8d7da; color:#721c24; padding:10px; border-radius:4px; margin-bottom:10px; font-size:13px;">
+                    <?= $error ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($success)): ?>
+                <div style="background:#d4edda; color:#155724; padding:10px; border-radius:4px; margin-bottom:10px; font-size:13px;">
+                    <?= $success ?>
+                </div>
+            <?php endif; ?>
+
             <div class="container">
-                <!-- Form Input Section (Left) -->
                 <div class="input-section">
-                    <form action="invoice.php" method="POST">
+                    <form method="POST">
                         <div class="form-group">
-                            <label for="tanggal">Tanggal:</label>
-                            <input type="date" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>" required>
+                            <label for="tanggal">Tanggal</label>
+                            <input type="date" name="tanggal" id="tanggal" value="<?= date('Y-m-d') ?>" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="nama">Nama:</label>
+                            <label for="nama">Nama</label>
                             <input type="text" name="nama" id="nama" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="no_hp">No HP:</label>
+                            <label for="no_hp">No HP</label>
                             <input type="text" name="no_hp" id="no_hp" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="layanan">Layanan:</label>
+                            <label for="layanan">Layanan</label>
                             <select name="layanan" id="layanan" required onchange="updateHarga()">
                                 <option value="Cuci Biasa">Cuci Biasa</option>
                                 <option value="Cuci Express">Cuci Express</option>
@@ -142,113 +262,151 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         
                         <div class="form-group">
-                            <label for="berat">Berat (kg):</label>
-                            <input type="number" name="berat" id="berat" onchange="updateHarga()" min="0" step="0.1">
+                            <label for="berat">Berat (kg)</label>
+                            <input type="number" name="berat" id="berat" min="0" step="0.1" onchange="updateHarga()" required>
                         </div>
-                        
+
+                        <!-- Dynamic Items -->
                         <div class="form-group">
-                            <label for="bed_cover">Bed Cover (Qty):</label>
-                            <input type="number" name="bed_cover" id="bed_cover" min="0" value="0" onchange="updateHarga()">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="bed_cover_checkbox" onchange="toggleInput('bed_cover')">
+                                Bed Cover
+                            </label>
+                            <div id="bed_cover_input" class="item-quantity">
+                                <input type="number" name="bed_cover" id="bed_cover" min="0" value="0" onchange="updateHarga()" placeholder="Qty">
+                            </div>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label for="sprei">Sprei (Qty):</label>
-                            <input type="number" name="sprei" id="sprei" min="0" value="0" onchange="updateHarga()">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="sprei_checkbox" onchange="toggleInput('sprei')">
+                                Sprei
+                            </label>
+                            <div id="sprei_input" class="item-quantity">
+                                <input type="number" name="sprei" id="sprei" min="0" value="0" onchange="updateHarga()" placeholder="Qty">
+                            </div>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label for="selimut">Selimut (Qty):</label>
-                            <input type="number" name="selimut" id="selimut" min="0" value="0" onchange="updateHarga()">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="selimut_checkbox" onchange="toggleInput('selimut')">
+                                Selimut
+                            </label>
+                            <div id="selimut_input" class="item-quantity">
+                                <input type="number" name="selimut" id="selimut" min="0" value="0" onchange="updateHarga()" placeholder="Qty">
+                            </div>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label for="karpet">Karpet (Qty):</label>
-                            <input type="number" name="karpet" id="karpet" min="0" value="0" onchange="updateHarga()">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="karpet_checkbox" onchange="toggleInput('karpet')">
+                                Karpet
+                            </label>
+                            <div id="karpet_input" class="item-quantity">
+                                <input type="number" name="karpet" id="karpet" min="0" value="0" onchange="updateHarga()" placeholder="Qty">
+                            </div>
                         </div>
                         
-                        <!-- Menyimpan Total Harga ke dalam form -->
                         <input type="hidden" name="total_harga" id="total_harga_input">
-                        
-                        <button type="submit">Simpan Transaksi</button>
+                        <button type="submit">Simpan</button>
                     </form>
                 </div>
                 
-                <!-- Price Calculation Section (Right) -->
                 <div class="price-section">
-                    <h2>Rincian Harga</h2>
+                    <h2 style="font-size:16px; margin-bottom:12px;">Detail Harga</h2>
                     
-                    <div class="price-item">
-                        <div class="price-item-title">Harga Layanan</div>
-                        <div class="price-item-value" id="harga_layanan">Rp 0</div>
+                    <div id="harga_layanan_item" class="price-item show">
+                        <div>Layanan</div>
+                        <div id="harga_layanan">Rp 0</div>
                     </div>
                     
-                    <div class="price-item">
-                        <div class="price-item-title">Harga Bed Cover</div>
-                        <div class="price-item-value" id="harga_bed_cover">Rp 0</div>
+                    <div id="harga_bed_cover_item" class="price-item">
+                        <div>Bed Cover</div>
+                        <div id="harga_bed_cover">Rp 0</div>
                     </div>
                     
-                    <div class="price-item">
-                        <div class="price-item-title">Harga Sprei</div>
-                        <div class="price-item-value" id="harga_sprei">Rp 0</div>
+                    <div id="harga_sprei_item" class="price-item">
+                        <div>Sprei</div>
+                        <div id="harga_sprei">Rp 0</div>
                     </div>
                     
-                    <div class="price-item">
-                        <div class="price-item-title">Harga Selimut</div>
-                        <div class="price-item-value" id="harga_selimut">Rp 0</div>
+                    <div id="harga_selimut_item" class="price-item">
+                        <div>Selimut</div>
+                        <div id="harga_selimut">Rp 0</div>
                     </div>
                     
-                    <div class="price-item">
-                        <div class="price-item-title">Harga Karpet</div>
-                        <div class="price-item-value" id="harga_karpet">Rp 0</div>
+                    <div id="harga_karpet_item" class="price-item">
+                        <div>Karpet</div>
+                        <div id="harga_karpet">Rp 0</div>
                     </div>
                     
                     <div class="total-price">
-                        <div class="total-price-title">Total Harga</div>
-                        <div class="total-price-value" id="total_harga">Rp 0</div>
+                        <div>Total</div>
+                        <div style="font-size:18px;" id="total_harga">Rp 0</div>
                     </div>
                 </div>
             </div>
-        </div> <!-- Tutup main-content-column -->
-    </div> <!-- Tutup app-container -->
+        </div>
+    </div>
 
     <script>
-        function updateHarga() {
-            var layanan = document.getElementById('layanan').value;
+        function toggleInput(item) {
+            const checkbox = document.getElementById(`${item}_checkbox`);
+            const inputDiv = document.getElementById(`${item}_input`);
+            const priceItem = document.getElementById(`harga_${item}_item`);
             
-            // Pastikan input angka valid atau set default ke 0 jika kosong
-            var berat = parseFloat(document.getElementById('berat').value) || 0;
-            var bedCoverQty = parseInt(document.getElementById('bed_cover').value) || 0;
-            var spreiQty = parseInt(document.getElementById('sprei').value) || 0;
-            var selimutQty = parseInt(document.getElementById('selimut').value) || 0;
-            var karpetQty = parseInt(document.getElementById('karpet').value) || 0;
-
-            // Harga layanan
-            var hargaPerKg = layanan == 'Cuci Biasa' ? 7000 : 35000;
-
-            // Harga item tambahan
-            var hargaBedCover = 30000;
-            var hargaSprei = 8000;
-            var hargaSelimut = 8000;
-            var hargaKarpet = 45000;
-
-            // Hitung harga total
-            var totalHarga = (berat * hargaPerKg) +
-                             (bedCoverQty * hargaBedCover) +
-                             (spreiQty * hargaSprei) +
-                             (selimutQty * hargaSelimut) +
-                             (karpetQty * hargaKarpet);
-
-            // Update harga yang ditampilkan
-            document.getElementById('harga_layanan').innerText = "Rp " + (berat * hargaPerKg).toLocaleString('id-ID');
-            document.getElementById('harga_bed_cover').innerText = "Rp " + (bedCoverQty * hargaBedCover).toLocaleString('id-ID');
-            document.getElementById('harga_sprei').innerText = "Rp " + (spreiQty * hargaSprei).toLocaleString('id-ID');
-            document.getElementById('harga_selimut').innerText = "Rp " + (selimutQty * hargaSelimut).toLocaleString('id-ID');
-            document.getElementById('harga_karpet').innerText = "Rp " + (karpetQty * hargaKarpet).toLocaleString('id-ID');
-            document.getElementById('total_harga').innerText = "Rp " + totalHarga.toLocaleString('id-ID');
-
-            // Set total harga ke dalam form
-            document.getElementById('total_harga_input').value = totalHarga;
+            if (checkbox.checked) {
+                inputDiv.style.display = 'block';
+                priceItem.classList.add('show');
+            } else {
+                inputDiv.style.display = 'none';
+                priceItem.classList.remove('show');
+                document.getElementById(item).value = 0;
+            }
+            updateHarga();
         }
+
+        function updateHarga() {
+            const service = document.getElementById('layanan').value;
+            const weight = parseFloat(document.getElementById('berat').value) || 0;
+            
+            const prices = {
+                service: service === 'Cuci Biasa' ? 7000 : 35000,
+                bed_cover: 30000,
+                sprei: 8000,
+                selimut: 8000,
+                karpet: 45000
+            };
+
+            const quantities = {};
+            ['bed_cover', 'sprei', 'selimut', 'karpet'].forEach(item => {
+                quantities[item] = document.getElementById(`${item}_checkbox`).checked 
+                    ? (parseInt(document.getElementById(item).value) || 0)
+                    : 0;
+            });
+
+            const totals = {
+                service: weight * prices.service,
+                bed_cover: quantities.bed_cover * prices.bed_cover,
+                sprei: quantities.sprei * prices.sprei,
+                selimut: quantities.selimut * prices.selimut,
+                karpet: quantities.karpet * prices.karpet
+            };
+
+            const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0);
+
+            // Update display
+            document.getElementById('harga_layanan').textContent = `Rp ${totals.service.toLocaleString('id-ID')}`;
+            document.getElementById('harga_bed_cover').textContent = `Rp ${totals.bed_cover.toLocaleString('id-ID')}`;
+            document.getElementById('harga_sprei').textContent = `Rp ${totals.sprei.toLocaleString('id-ID')}`;
+            document.getElementById('harga_selimut').textContent = `Rp ${totals.selimut.toLocaleString('id-ID')}`;
+            document.getElementById('harga_karpet').textContent = `Rp ${totals.karpet.toLocaleString('id-ID')}`;
+            document.getElementById('total_harga').textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+            document.getElementById('total_harga_input').value = grandTotal;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', updateHarga);
     </script>
 </body>
 </html>
