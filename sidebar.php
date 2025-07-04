@@ -22,7 +22,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="index.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : '' ?>">
+                    <a href="lacak.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'lacak.php') ? 'active' : '' ?>">
                         <i class="fas fa-search"></i> <!-- Search icon -->
                         <span>Lacak Order</span>
                     </a>
@@ -35,12 +35,12 @@
                     </a>
                 </li>
                 <?php endif; ?>
-                <li>
+                <!-- <li>
                     <a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i> <!-- Logout icon -->
-                        <span>Logout</span>
-                    </a>
-                </li>
+                        <!-- <span>Logout</span> -->
+                    <!-- </a> -->
+                <!-- </li>  -->
             </ul>
         </div>
         

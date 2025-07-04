@@ -3,41 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Landing Page">
-    <title>Landing Page</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Order Tracking</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .status-indicator {
+            display: inline-block;
+            width: 20px; /* Lebar oval */
+            height: 10px; /* Tinggi oval */
+            border-radius: 10px; /* Membuat oval */
+            margin-right: 5px; /* Jarak antara oval dan teks */
+        }
+        .status-on-progress {
+            background-color: red;
+        }
+        .status-dicuci {
+            background-color: yellow;
+        }
+        .status-selesai {
+            background-color: green;
+        }
+        .status-belum-dibayar {
+            background-color: red;
+        }
+        .status-sudah-dibayar {
+            background-color: green;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <h1 class="logo">Razin Laundry</h1>
-            <nav>
-                <ul>
-                    <li><a href="#tracking">Tracking Pesanan</a></li>
-                    <li><a href="#about">Tentang Kami</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Selamat Datang di Razin Laundry!</h2>
-            <p>Waktu Anda Berharga, Kami Cuci dengan Cepat dan Bersih!</p>
-            <a href="#about" class="btn">Kenali Kami Lebih Dekat</a>
-        </div>
-    </section>
-
-    <!-- Order Tracking Section -->
-    <section id="features" class="features">
-    <div class="container"></div>
+    <div class="container mt-5">
         <h2>Order Tracking</h2>
         <form id="trackingForm" method="POST" action="">
             <div class="form-group">
-                <h3><label for="id_tracking">Masukkan ID Tracking:</label></h3>
+                <label for="id_tracking">Masukkan ID Tracking:</label>
                 <input type="text" id="id_tracking" name="id_tracking" class="form-control" required>
             </div>
             <input type="submit" value="Cari" class="btn btn-primary">
@@ -136,59 +134,5 @@
         }
         ?>
     </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2>Nikmati Layanan Kami</h2>
-        <!-- Express Laundry Feature -->
-            <div class="feature-item">
-                <h3>Laundry Express</h3>
-                <p>Melakukan pencucian dengan waktu yang cepat, ideal untuk Anda yang membutuhkan layanan cepat dan efisien.</p>
-            </div>
-        <!-- Same Day Laundry Feature -->
-            <div class="feature-item">
-                <h3>Laundry Same Day</h3>
-                <p>Proses pencucian dan pengantaran pada hari yang sama, sangat cocok untuk Anda yang membutuhkan layanan segera.</p>
-            </div>
-        <!-- Regular Laundry Feature -->
-            <div class="feature-item">
-                <h3>Laundry Reguler</h3>
-                <p>Layanan pencucian dengan waktu lebih panjang dan harga lebih terjangkau. Hasil cuci tetap berkualitas tinggi.</p>
-            </div>
-        </div>
-    </section>
-
-
-
-    <!-- About Us Section -->
-<section id="about" class="about">
-    <div class="container">
-        <h2>Tentang Kami</h2>
-        <p>Selamat datang di <strong>Razin Laundry</strong> tempat di mana kebersihan dan kenyamanan pakaian Anda adalah prioritas kami. Kami menyediakan layanan laundry cepat, berkualitas, dan terpercaya, dengan perhatian penuh pada setiap detail. Dari cuci biasa hingga cuci kering, kami pastikan pakaian Anda kembali segar dan terawat tanpa harus menghabiskan waktu Anda.</p>
-        <p>Razin Laundry adalah solusi praktis untuk kebutuhan laundry Anda. Percayakan pakaian Anda kepada kami dan rasakan kenyamanan layanan yang efisien dan ramah. Hubungi kami hari ini dan nikmati kebersihan yang sempurna!</p>
-    </div>
-</section>
-
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-right">
-                <h3>Kontak Kami</h3>
-                <ul class="social-links">
-                    <li><a href="https://wa.me/62878708675313" target="_blank">📞 WhatsApp</a></li>
-                    <li><a href="https://facebook.com" target="_blank">📘 Facebook</a></li>
-                    <li><a href="https://instagram.com" target="_blank">📸 Instagram</a></li>
-                </ul>
-                <p><strong>Alamat:</strong> Bandung </p>
-            </div>
-            <div class="footer-left">
-                <p>&copy; 2025 Razin Laundry. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
 </body>
 </html>
